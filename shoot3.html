@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Line Movement Game</title>
+  <style>
+    /* ゲームコンテナ全体のスタイル */
+    #game-container {
+      position: relative;
+      width: 400px; /* 正方形に調整 */
+      height: 400px; /* 正方形に調整 */
+      margin: auto;
+      border: 1px solid black;
+      overflow: hidden;
+    }
+    
+    /* プレイヤーのスタイル */
+    #player {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: blue;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* 線のスタイル */
+    .line {
+      position: absolute;
+      background-color: black;
+    }
+    
+    /* 縦の線のスタイル */
+    .vertical-line {
+      width: 2px;
+      height: 100%;
+    }
+    
+    /* 横の線のスタイル */
+    .horizontal-line {
+      width: 100%;
+      height: 2px;
+    }
+
+    /* 交差点のスタイル */
+    .intersection {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+
+    /* ボタンのスタイル */
+    .button {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      font-size: 18px;
+      text-align: center;
+      line-height: 50px;
+      background-color: lightgray;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <!-- 線を表示する要素 -->
+    <div class="line vertical-line" style="left: 25%;"></div>
+    <div class="line vertical-line" style="left: 50%;"></div>
+    <div class="line vertical-line" style="left: 75%;"></div>
+    <div class="line horizontal-line" style="bottom: 25%;"></div>
+    <div class="line horizontal-line" style="bottom: 50%;"></div>
+    <div class="line horizontal-line" style="bottom: 75%;"></div>
+    <!-- 交差点を表示する要素 -->
+    <div class="intersection intersection1" style="left: 25%; bottom: 75%;"></div>
+    <div class="intersection intersection2" style="left: 50%; bottom: 75%;"></div>
+    <div class="intersection intersection3" style="left: 75%; bottom: 75%;"></div>
+    <div class="intersection intersection4" style="left: 25%; bottom: 50%;"></div>
+    <div class="intersection intersection5" style="left: 50%; bottom: 50%;"></div>
+    <div class="intersection intersection6" style="left: 75%; bottom: 50%;"></div>
+    <div class="intersection intersection7" style="left: 25%; bottom: 25%;"></div>
+    <div class="intersection intersection8" style="left: 50%; bottom: 25%;"></div>
+    <div class="intersection intersection9" style="left: 75%; bottom: 25%;"></div>
+    <!-- プレイヤーを表示する要素 -->
+    <div id="player"></div>
+    <!-- ボタンを表示する要素 -->
+    <div class="button" id="up-button">↑</div>
+    <div class="button" id="left-button">←</div>
+    <div class="button" id="down-button">↓</div>
+    <div class="button" id="right-button">→</div>
+
+    <div class="button" id="up-button-attack">↑撃</div>
+    <div class="button" id="left-button-attack">←撃</div>
+    <div class="button" id="down-button-attack">↓撃</div>
+    <div class="button" id="right-button-attack">→撃</div>
+  </div>
+
+  <script>
+    // HTML要素の取得
+    const player = document.getElementById('player');
+    const intersections = document.querySelectorAll('.intersection');
+    const gameContainer = document.getElementById('game-container');
+    const upButton = document.getElementById('up-button');
+    const leftButton = document.getElementById('left-button');
+    const downButton = document.getElementById('down-button');
+    const rightButton = document.getElementById('right-button');
+    const attackupButton = document.getElementById('up-button-attack');
+    const attackleftButton = document.getElementById('left-button-attack');
+    const attackdownButton = document.getElementById('down-button-attack');
+    const attackrightButton = document.getElementById('right-button-attack');
+    
+    // プレイヤーの移動速度
+    const playerSpeed = 3;
+
+    // 現在のマップ座標
+    let currentX = 0;
+    let currentY = 0;
+
+    // 上ボタンのクリックイベント
+    upButton.addEventListener('click', () => {
+      if (currentY < 2) {
+        currentY++;
+        updatePlayerPosition();
+        console.log(`Current Position: X=${currentX}, Y=${currentY}`);
+      }
+    });
+
+    // 左ボタンのクリックイベント
+    leftButton.addEventListener('click', () => {
+      if (currentX > 0) {
+        currentX--;
+        updatePlayerPosition();
+        console.log(`Current Position: X=${currentX}, Y=${currentY}`);
+      }
+    });
+
+    // 下ボタンのクリックイベント
+    downButton.addEventListener('click', () => {
+      if (currentY > 0) {
+        currentY--;
+        updatePlayerPosition();
+        console.log(`Current Position: X=${currentX}, Y=${currentY}`);
+      }
+    });
+
+    // 右ボタンのクリックイベント
+    rightButton.addEventListener('click', () => {
+      if (currentX < 2) {
+        currentX++;
+        updatePlayerPosition();
+        console.log(`Current Position: X=${currentX}, Y=${currentY}`);
+      }
+    });
+
+    //上撃のクリックイベント
+    attackupButton.addEventListener('click', 
+
+    )
+
+    // プレイヤー位置を更新する関数
+    function updatePlayerPosition() {
+      const targetIntersection = intersections[currentY * 3 + currentX];
+      const targetRect = targetIntersection.getBoundingClientRect();
+        //y座標のちょうどいいやつ
+      //player.style.bottom = targetRect.top + targetRect.height / 2 - player.offsetHeight / 2 -55-currentY*75+ '%';
+      player.style.bottom = 19 +currentY*25+ '%';
+      //x座標少しちょうどいいやつ
+      player.style.left = 25 +currentX*25+ '%';
+      //player.style.left = targetRect.left + targetRect.width / 2 - player.offsetWidth / 2 - targetRect.width * (currentX - 2) + 'px';
+      //player.style.left = targetRect.left + targetRect.width / 2 - player.offsetWidth / 2 - targetRect.width * (currentX - 2) -275.5 - currentX*65 + '%';
+      console.log(player.style.left);
+      console.log(player.style.bottom);
+      //    player.style.left = targetRect.left + targetRect.width / 2 - player.offsetWidth / 2 - targetRect.width * (currentX - 4)  + 'px';
+    }
+  </script>
+</body>
+</html>

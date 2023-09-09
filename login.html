@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン</title>
+</head>
+<body>
+    <h1>アカウント作成とログイン</h1>
+
+    <h2>ログイン</h2>
+    <input type="email" id="loginEmail" placeholder="メールアドレス"><br>
+    <input type="password" id="loginPassword" placeholder="パスワード"><br>
+    <button onclick="signIn(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)">ログイン</button>
+
+    <h2>アカウント作成</h2>
+    <input type="email" id="createEmail" placeholder="メールアドレス"><br>
+    <input type="password" id="createPassword" placeholder="パスワード"><br>
+    <button onclick="createAccount(document.getElementById('createEmail').value, document.getElementById('createPassword').value)">アカウント作成</button>
+    
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-analytics.js";
+        import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved } 
+        from "https://www.gstatic.com/firebasejs/10.3.1/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyAOQ4ilnq3M3vmIv49gLcFpMu-A_QxZVGE",
+          authDomain: "rogin-f1ed5.firebaseapp.com",
+          projectId: "rogin-f1ed5",
+          storageBucket: "rogin-f1ed5.appspot.com",
+          messagingSenderId: "123819415435",
+          appId: "1:123819415435:web:9acf5b38231866c36e418e",
+          measurementId: "G-BV59QDWRBM"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        // Firebaseを初期化
+        firebase.initializeApp(firebaseConfig);
+        
+        // ユーザーのアカウントを作成する関数
+        function createAccount(email, password) {
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // アカウントの作成に成功した場合
+                    const user = userCredential.user;
+                    console.log("アカウントが作成されました。", user);
+                })
+                .catch((error) => {
+                    // エラーが発生した場合
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error("アカウントの作成中にエラーが発生しました。", errorCode, errorMessage);
+                });
+        }
+
+        // ユーザーのログインを行う関数
+        function signIn(email, password) {
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // ログインに成功した場合
+                    const user = userCredential.user;
+                    console.log("ログインしました。", user);
+                    window.location.href = "shoot3.html";
+                })
+                .catch((error) => {
+                    // エラーが発生した場合
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error("ログイン中にエラーが発生しました。", errorCode, errorMessage);
+                });
+        }
+    </script>
+</body>
+</html>

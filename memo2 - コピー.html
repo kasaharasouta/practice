@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>メモ帳</title>
+    <style>
+        /* 全体のスタイル */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+        ul.display {
+            list-style: none;
+            padding: 0;
+        }
+        ul.display li {
+            padding: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        ul.display li:hover {
+            background-color: #f2f2f2;
+        }
+        #memo-content {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        /* レスポンシブデザイン用の調整 */
+        @media (max-width: 480px) {
+            form {
+                padding: 10px;
+            }
+            input[type="text"], textarea {
+                padding: 5px;
+                font-size: 14px;
+            }
+            input[type="button"] {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Memopad</h1>
+    <form name="form1">
+        <div>
+            <input type="text" id="txt1" placeholder="タイトル">
+            <input type="text" id="txt2" placeholder="内容">
+            <input type="button" value="追加" onclick="addMemo()">
+            <input type="button" value="読込" onclick="loadMemo()">
+            <input type="button" value="削除" onclick="deleteMemos()">
+        </div>
+        <div id="memo-content">ここにメモの内容が表示されます</div>
+        
+        ＜保存されているタイトル＞
+        <ul class="display"></ul>
+        
+    </form>
+
+    <script>
+         // メモを追加する関数
+        function addMemo() {
+
+            // 入力されたタイトルと内容を取得
+            const title = document.querySelector('#txt1').value;
+            const content = document.querySelector('#txt2').value;
+
+            // タイトルと内容が入力されているかチェック
+            //===は厳密等価演算子
+            //trimは空白を削除するおまじない
+           if (title.trim() === '' || content.trim() === '') {      
+           // if (title === '' || content === '') {   
+                alert('タイトルと内容を入力してください。');
+                //このreturnは関数内でscriptを強制終了します
+                return;
+            }
+
+            // ローカルストレージにメモを保存
+            localStorage.setItem(title, content);
+
+            // 入力欄をリセット
+            document.querySelector('#txt1').value = '';
+            document.querySelector('#txt2').value = '';
+
+            // メモのタイトル一覧を再読み込み
+            loadMemos();
+        }
+         // メモのタイトル一覧を表示する関数
+        function loadMemos() {
+
+            // ローカルストレージからメモのタイトル一覧を取得
+            //Objectでkeyとvalueのペアを作る（？）的な
+            const memos = Object.keys(localStorage);
+
+            // メモ一覧を表示するul要素の参照を取得
+            const display = document.querySelector('.display');
+            const memoContent = document.querySelector('#memo-content');
+
+            // メモ一覧をクリアしてから、ローカルストレージから取得したタイトルを表示
+            display.innerHTML = '';
+            if (memos.length === 0) {
+                // メモが1つもない場合は、メッセージを表示
+                display.innerHTML = '保存されてるメモはありません。';
+                memoContent.innerHTML = '';
+                return;
+            }
+            //なにこれ↓
+            memos.forEach(title => {
+                 // メモ一覧を表示するli要素を作成してタイトルを追加
+                                            //なにこれ↓
+                const memoItem = document.createElement('li');
+                        //なにこれ↓
+                memoItem.textContent = title;
+                        //なにこれ↓
+                display.appendChild(memoItem);
+            });
+        }
+        // メモのタイトルと内容を表示する関数
+        function loadMemo() {
+             // ユーザーに読み込むメモのタイトルを入力してもらう
+            const titleToLoad = prompt('読み込むメモのタイトルを入力してください');
+            if (!titleToLoad || titleToLoad.trim() === '') {
+                alert('タイトルを入力してください。');
+                return;
+            }
+
+             // 入力されたタイトルに対応する内容をローカルストレージから取得
+            const contentToLoad = localStorage.getItem(titleToLoad);
+                                //nullは変数データが何もないことを示す
+            //ここではtitleToLoad、つまり読み込むメモのタイトルが変数として存在していなかったときに処理が行われる
+            if (contentToLoad === null) {
+                // 該当するタイトルのメモがない場合は、エラーメッセージを表示
+                alert(`${titleToLoad} というタイトルのメモは見つかりませんでした。`);
+                return;
+            }
+            // 読み込んだメモのタイトルと内容を表示する要素の参照を取得
+            const memoContent = document.querySelector('#memo-content');
+             // 読み込んだメモのタイトルと内容を表示（これ覚えとこ）
+            memoContent.innerHTML = `<h2>${titleToLoad}</h2><p>${contentToLoad}</p>`;
+        }
+
+        // メモを削除する関数
+        function deleteMemos() {
+            // メモ一覧を表示するul要素の参照を取得
+            const display = document.querySelector('.display');
+            // メモ一覧のli要素を取得
+                                                 //Allってどゆこと？
+            const memoItems = display.querySelectorAll('li');
+             // 削除されたメモがあるかどうかを判定するフラグ
+            let hasChecked = false;
+             // メモ一覧のli要素にチェックボックスを追加する処理
+            memoItems.forEach(memoItem => {
+                if (!memoItem.querySelector('.memo-checkbox')) {
+                    // .memo-checkboxが存在しない場合、新しいチェックボックスを作成
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'memo-checkbox';
+                    // memoItem要素の最初の子要素としてチェックボックスを追加
+                    memoItem.insertBefore(checkbox, memoItem.firstChild);
+                }
+            });
+// メモの削除処理
+            const checkboxes = display.querySelectorAll('.memo-checkbox');
+            checkboxes.forEach(checkbox => {
+                // チェックボックスがチェックされている（削除対象）場合
+                if (checkbox.checked) {
+                    hasChecked = true;
+                    // チェックされているメモのタイトルを取得
+                    const titleToDelete = checkbox.nextSibling.textContent;
+                     // ローカルストレージから該当メモの内容を取得
+                    const content = localStorage.getItem(titleToDelete);
+                    if (content !== null) {
+                         // メモをローカルストレージから削除
+                        localStorage.removeItem(titleToDelete);
+                         // メモ一覧から削除
+                        display.removeChild(checkbox.parentNode);
+                    }
+                }
+            });
+            // 削除対象が1つもない場合はエラーメッセージを表示
+            if (!hasChecked) {
+                alert('削除するメモを選択してください。');
+            } else {
+                alert('選択したメモが削除されました。');
+            }
+        }
+         // メモのタイトル一覧を初期表示
+        loadMemos();
+    </script>
+</body>
+</html>
+
